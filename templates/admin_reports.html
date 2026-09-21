@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics Reports - TrekManage{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">Analytics Reports</h2>
+    </div>
+
+    <!-- Overview Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="card shadow-sm border-0 bg-white rounded-3">
+                <div class="card-body text-center p-4">
+                    <h6 class="text-uppercase text-muted fw-bold mb-2 small">Total Bookings</h6>
+                    <h3 class="fw-bold text-primary">{{ total_bookings }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card shadow-sm border-0 bg-white rounded-3">
+                <div class="card-body text-center p-4">
+                    <h6 class="text-uppercase text-muted fw-bold mb-2 small">Active</h6>
+                    <h3 class="fw-bold text-success">{{ active_bookings }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card shadow-sm border-0 bg-white rounded-3">
+                <div class="card-body text-center p-4">
+                    <h6 class="text-uppercase text-muted fw-bold mb-2 small">Completed</h6>
+                    <h3 class="fw-bold text-info">{{ completed_bookings }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card shadow-sm border-0 bg-white rounded-3">
+                <div class="card-body text-center p-4">
+                    <h6 class="text-uppercase text-muted fw-bold mb-2 small">Cancelled</h6>
+                    <h3 class="fw-bold text-danger">{{ cancelled_bookings }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Difficulty Distribution -->
+        <div class="col-12 col-md-6">
+            <div class="card custom-table-card h-100">
+                <div class="card-header custom-table-header">
+                    <h5>Difficulty Level Distribution</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush mt-2">
+                        <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                            <span><i class="bi bi-circle-fill text-success me-2"></i>Easy Treks</span>
+                            <span class="badge bg-success rounded-pill px-3">{{ difficulty_map.get('Easy', 0) }}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                            <span><i class="bi bi-circle-fill text-warning me-2"></i>Moderate Treks</span>
+                            <span class="badge bg-warning text-dark rounded-pill px-3">{{ difficulty_map.get('Moderate', 0) }}</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                            <span><i class="bi bi-circle-fill text-danger me-2"></i>Hard Treks</span>
+                            <span class="badge bg-danger rounded-pill px-3">{{ difficulty_map.get('Hard', 0) }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Most Popular Treks -->
+        <div class="col-12 col-md-6">
+            <div class="card custom-table-card h-100">
+                <div class="card-header custom-table-header">
+                    <h5>Top Popular Treks (by seats booked)</h5>
+                </div>
+                <div class="card-body">
+                    <ol class="list-group list-group-numbered list-group-flush mt-2">
+                        {% for trek_name, count in most_popular_treks %}
+                            <li class="list-group-item d-flex justify-content-between align-items-start border-0 px-0">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">{{ trek_name }}</div>
+                                </div>
+                                <span class="badge bg-primary rounded-pill px-3">{{ count }} booked</span>
+                            </li>
+                        {% else %}
+                            <li class="list-group-item text-center text-muted py-4 border-0 px-0">No active bookings for popular treks.</li>
+                        {% endfor %}
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

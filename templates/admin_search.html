@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Search Database - TrekManage{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">Global Search</h2>
+    </div>
+
+    <!-- Search input -->
+    <div class="card border-0 shadow-sm mb-4">
+        <div class="card-body p-4">
+            <form action="{{ url_for('admin.search') }}" method="GET" class="d-flex gap-2">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="bi bi-search"></i></span>
+                    <input type="text" name="q" class="form-control bg-light border-start-0" placeholder="Search by name, location, username, or ID (e.g. 1)..." value="{{ query }}" required>
+                </div>
+                <button type="submit" class="btn btn-primary px-4 fw-semibold">Search</button>
+            </form>
+        </div>
+    </div>
+
+    {% if query %}
+        <div class="mb-4">
+            <span class="text-muted">Showing results for: </span><strong>"{{ query }}"</strong>
+        </div>
+
+        <!-- Treks Results -->
+        <div class="card custom-table-card mb-4">
+            <div class="card-header custom-table-header">
+                <h5>Treks Matches ({{ treks_results|length }})</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Trek ID</th>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Difficulty</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for trek in treks_results %}
+                            <tr>
+                                <td>T{{ "%02d" | format(trek.id) }}</td>
+                                <td><a href="{{ url_for('admin.treks', search=trek.name) }}" class="fw-bold text-decoration-none">{{ trek.name }}</a></td>
+                                <td>{{ trek.location }}</td>
+                                <td>{{ trek.difficulty }}</td>
+                                <td><span class="badge-status {% if trek.status == 'Open' %}badge-open{% elif trek.status == 'Closed' %}badge-closed{% else %}badge-pending{% endif %}">{{ trek.status }}</span></td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-3">No matching treks found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Staff Results -->
+        <div class="card custom-table-card mb-4">
+            <div class="card-header custom-table-header">
+                <h5>Staff Matches ({{ staff_results|length }})</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Staff ID</th>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Contact</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for staff in staff_results %}
+                            <tr>
+                                <td>S{{ "%02d" | format(staff.id) }}</td>
+                                <td><strong>{{ staff.name }}</strong></td>
+                                <td>{{ staff.username }}</td>
+                                <td>{{ staff.contact_details }}</td>
+                                <td><span class="badge-status {% if staff.status == 'approved' %}badge-open{% else %}badge-pending{% endif %}">{{ staff.status | capitalize }}</span></td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-3">No matching staff found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Users Results -->
+        <div class="card custom-table-card">
+            <div class="card-header custom-table-header">
+                <h5>Users Matches ({{ users_results|length }})</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Contact</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users_results %}
+                            <tr>
+                                <td>U{{ "%02d" | format(user.id) }}</td>
+                                <td><strong>{{ user.name }}</strong></td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.contact_details }}</td>
+                                <td><span class="badge-status {% if user.status == 'approved' %}badge-open{% else %}badge-closed{% endif %}">{{ user.status | capitalize }}</span></td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-3">No matching users found.</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

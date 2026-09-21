@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Trekker Dashboard - TrekManage{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">Welcome, {{ session.get('name') }}!</h2>
+    </div>
+
+    <!-- Available Treks Section (Page 9) -->
+    <div class="card border-0 shadow-sm mb-4 rounded-3">
+        <div class="card-header bg-transparent border-bottom-0 pt-4 px-4 d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <h5 class="fw-bold text-primary mb-0"><i class="bi bi-compass-fill me-2 text-warning"></i>Available Treks</h5>
+            
+            <!-- Filters Form -->
+            <form action="{{ url_for('user.dashboard') }}" method="GET" class="d-flex gap-2">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light text-muted">Difficulty</span>
+                    <select class="form-select bg-light" name="difficulty" onchange="this.form.submit()">
+                        <option value="All" {% if selected_difficulty == 'All' %}selected{% endif %}>All</option>
+                        <option value="Easy" {% if selected_difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+                        <option value="Moderate" {% if selected_difficulty == 'Moderate' %}selected{% endif %}>Moderate</option>
+                        <option value="Hard" {% if selected_difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+                    </select>
+                </div>
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light text-muted">Location</span>
+                    <select class="form-select bg-light" name="location" onchange="this.form.submit()">
+                        <option value="All" {% if selected_location == 'All' %}selected{% endif %}>All</option>
+                        {% for loc in locations %}
+                            <option value="{{ loc }}" {% if selected_location == loc %}selected{% endif %}>{{ loc }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Trek Name</th>
+                        <th>Location</th>
+                        <th>Difficulty</th>
+                        <th>Duration</th>
+                        <th>Slots Available</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for trek in available_treks %}
+                        <tr>
+                            <td><strong><a href="{{ url_for('user.trek_detail', trek_id=trek.id) }}" class="text-decoration-none text-dark">{{ trek.name }}</a></strong></td>
+                            <td>{{ trek.location }}</td>
+                            <td>
+                                <span class="badge {% if trek.difficulty == 'Easy' %}bg-success-subtle text-success{% elif trek.difficulty == 'Moderate' %}bg-warning-subtle text-warning-emphasis{% else %}bg-danger-subtle text-danger{% endif %} badge-status">
+                                    {{ trek.difficulty }}
+                                </span>
+                            </td>
+                            <td>{{ trek.duration }} Days</td>
+                            <td>{{ trek.available_slots }} / {{ trek.max_slots }}</td>
+                            <td class="text-end">
+                                <a href="{{ url_for('user.trek_detail', trek_id=trek.id) }}" class="btn btn-primary btn-sm px-3 fw-bold rounded-pill">Book Now</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-5">No available treks found matching your criteria.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Active Bookings Summary Section -->
+    <div class="card custom-table-card">
+        <div class="card-header custom-table-header d-flex justify-content-between align-items-center">
+            <h5>My Bookings</h5>
+            <a href="{{ url_for('user.my_bookings') }}" class="btn btn-link text-primary text-decoration-none fw-semibold p-0">View All Bookings &rarr;</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Trek Name</th>
+                        <th>Booking Date</th>
+                        <th>Status</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in active_bookings %}
+                        <tr>
+                            <td><strong>{{ booking.trek.name }}</strong></td>
+                            <td>{{ booking.booking_date.strftime('%d %b %Y') }}</td>
+                            <td><span class="badge-status badge-open">{{ booking.status }}</span></td>
+                            <td class="text-end">
+                                <a href="{{ url_for('user.trek_detail', trek_id=booking.trek_id) }}" class="btn btn-outline-primary btn-sm px-3 fw-semibold">View Details</a>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-4">You have no active bookings at the moment.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

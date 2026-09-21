@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Users - TrekManage{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">Registered Users (Trekkers)</h2>
+    </div>
+
+    <!-- Users Table -->
+    <div class="card custom-table-card">
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Name</th>
+                        <th>Username</th>
+                        <th>Email/Contact</th>
+                        <th>Status</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users_list %}
+                        <tr>
+                            <td>U{{ "%03d" | format(user.id) }}</td>
+                            <td><strong>{{ user.name }}</strong></td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.contact_details }}</td>
+                            <td>
+                                <span class="badge-status {% if user.status == 'approved' %}badge-open{% else %}badge-closed{% endif %}">
+                                    {{ user.status | capitalize }}
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <form action="{{ url_for('admin.blacklist_user', user_id=user.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to change this user\'s block status?');">
+                                    {% if user.status == 'blacklisted' %}
+                                        <button type="submit" class="btn btn-outline-success btn-sm px-3">Un-Blacklist</button>
+                                    {% else %}
+                                        <button type="submit" class="btn btn-outline-danger btn-sm px-3">Blacklist</button>
+                                    {% endif %}
+                                </form>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center text-muted py-4">No registered users found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

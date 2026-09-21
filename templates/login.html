@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Login - Trekking Management Application{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="card auth-card">
+        <div class="card-body auth-card-body">
+            <h3 class="auth-title">
+                <i class="bi bi-compass-fill me-2 text-warning animate-spin"></i>Login
+            </h3>
+            <p class="text-muted text-center mb-4">Trekking Management Application</p>
+            
+            <form action="{{ url_for('auth.login') }}" method="POST">
+                <div class="mb-3">
+                    <label for="username" class="form-label fw-semibold">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-person text-muted"></i></span>
+                        <input type="text" class="form-control bg-light border-start-0" id="username" name="username" placeholder="Enter username" required>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="password" class="form-label fw-semibold">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-muted"></i></span>
+                        <input type="password" class="form-control bg-light border-start-0" id="password" name="password" placeholder="Enter password" required>
+                    </div>
+                </div>
+                
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                    <label class="form-check-label text-muted" for="remember">Remember me</label>
+                </div>
+                
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-primary py-2 rounded-3 fw-bold">Login</button>
+                </div>
+            </form>
+            
+            <div class="text-center mt-4">
+                <span class="text-muted">Don't have an account?</span> 
+                <a href="{{ url_for('auth.register') }}" class="text-primary fw-semibold text-decoration-none">Register here</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

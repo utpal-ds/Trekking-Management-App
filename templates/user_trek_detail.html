@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Trek Detail - {{ trek.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <!-- Back Navigation (Page 10) -->
+    <a href="{{ url_for('user.dashboard') }}" class="btn btn-link text-decoration-none text-muted mb-3 p-0">
+        <i class="bi bi-arrow-left me-1"></i> Back to Treks
+    </a>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+        <!-- Trek Custom Banner -->
+        <div class="trek-banner-img">
+            <div class="text-center p-4">
+                <h1 class="fw-bold mb-0 text-white shadow-sm">{{ trek.name }}</h1>
+                <p class="mb-0 text-white-50"><i class="bi bi-geo-alt-fill me-1"></i>{{ trek.location }}</p>
+            </div>
+        </div>
+
+        <div class="card-body p-4">
+            <div class="row g-4">
+                <!-- Info Grid -->
+                <div class="col-12 col-md-7">
+                    <h5 class="fw-bold text-primary mb-3">Trek Overview</h5>
+                    <div class="row g-3 bg-light rounded-3 p-3 mb-4">
+                        <div class="col-6 col-sm-4">
+                            <span class="text-muted small fw-bold text-uppercase d-block">Location</span>
+                            <span class="fw-semibold text-dark">{{ trek.location }}</span>
+                        </div>
+                        <div class="col-6 col-sm-4">
+                            <span class="text-muted small fw-bold text-uppercase d-block">Difficulty</span>
+                            <span class="badge {% if trek.difficulty == 'Easy' %}bg-success-subtle text-success{% elif trek.difficulty == 'Moderate' %}bg-warning-subtle text-warning-emphasis{% else %}bg-danger-subtle text-danger{% endif %} py-1 px-2 rounded">
+                                {{ trek.difficulty }}
+                            </span>
+                        </div>
+                        <div class="col-6 col-sm-4">
+                            <span class="text-muted small fw-bold text-uppercase d-block">Duration</span>
+                            <span class="fw-semibold text-dark">{{ trek.duration }} Days</span>
+                        </div>
+                        <div class="col-6 col-sm-4">
+                            <span class="text-muted small fw-bold text-uppercase d-block">Start Date</span>
+                            <span class="fw-semibold text-dark">{{ trek.start_date }}</span>
+                        </div>
+                        <div class="col-6 col-sm-4">
+                            <span class="text-muted small fw-bold text-uppercase d-block">End Date</span>
+                            <span class="fw-semibold text-dark">{{ trek.end_date }}</span>
+                        </div>
+                        <div class="col-6 col-sm-4">
+                            <span class="text-muted small fw-bold text-uppercase d-block">Available Slots</span>
+                            <span class="fw-semibold text-primary">{{ trek.available_slots }} / {{ trek.max_slots }}</span>
+                        </div>
+                    </div>
+
+                    <h5 class="fw-bold text-primary mb-2">Trek Guide / Staff</h5>
+                    <p class="text-muted mb-4">
+                        {% if trek.assigned_staff %}
+                            <i class="bi bi-person-badge text-primary me-2"></i>Guided by: <strong>{{ trek.assigned_staff.name }}</strong>
+                        {% else %}
+                            <i class="bi bi-exclamation-triangle text-warning me-2"></i>Guide assignment pending.
+                        {% endif %}
+                    </p>
+
+                    <h5 class="fw-bold text-primary mb-2">Description & Route</h5>
+                    <p class="text-muted" style="line-height: 1.6;">
+                        {{ trek.description or "Embark on a breathtaking journey through pristine valleys, challenging mountain ridges, and spectacular panoramic lookouts. Experience local culture, test your limits, and create memories that will last a lifetime. Fully guided with safety equipment and logistics pre-arranged." }}
+                    </p>
+                </div>
+
+                <!-- Booking Panel (Page 10 right side) -->
+                <div class="col-12 col-md-5">
+                    <div class="card border-0 bg-white shadow rounded-3 p-4">
+                        <h4 class="fw-bold text-primary mb-3">Book This Trek</h4>
+                        
+                        {% if trek.status == 'Open' and trek.available_slots > 0 %}
+                            <form action="{{ url_for('user.book_trek', trek_id=trek.id) }}" method="POST">
+                                <div class="mb-4">
+                                    <label for="slots" class="form-label fw-semibold">Number of Seats (Slots)</label>
+                                    <select class="form-select bg-light border-0" id="slots" name="slots" required>
+                                        {% for i in range(1, (trek.available_slots if trek.available_slots < 6 else 6) + 1) %}
+                                            <option value="{{ i }}">{{ i }} {% if i == 1 %}Seat{% else %}Seats{% endif %}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <span class="text-muted small d-block mt-2">Maximum of 5 seats can be booked in a single request.</span>
+                                </div>
+                                
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg py-3 fw-bold rounded-3">Confirm Booking</button>
+                                </div>
+                            </form>
+                        {% else %}
+                            <div class="alert alert-warning border-0 rounded-3 mb-0" role="alert">
+                                <i class="bi bi-exclamation-octagon-fill me-2"></i>Bookings are currently closed or slots are full for this trek.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

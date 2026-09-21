@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}Register - Trekking Management Application{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="card auth-card">
+        <div class="card-body auth-card-body">
+            <h3 class="auth-title">
+                <i class="bi bi-person-plus-fill me-2 text-warning"></i>Register
+            </h3>
+            <p class="text-muted text-center mb-4">Trekking Management Application</p>
+            
+            <form action="{{ url_for('auth.register') }}" method="POST">
+                <div class="mb-3">
+                    <label for="name" class="form-label fw-semibold">Full Name</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-card-text text-muted"></i></span>
+                        <input type="text" class="form-control bg-light border-start-0" id="name" name="name" placeholder="Enter full name" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="username" class="form-label fw-semibold">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-person text-muted"></i></span>
+                        <input type="text" class="form-control bg-light border-start-0" id="username" name="username" placeholder="Choose a username" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="contact_details" class="form-label fw-semibold">Contact Details</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-telephone text-muted"></i></span>
+                        <input type="text" class="form-control bg-light border-start-0" id="contact_details" name="contact_details" placeholder="Email or Phone number" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="role" class="form-label fw-semibold">I am a...</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-person-workspace text-muted"></i></span>
+                        <select class="form-select bg-light border-start-0" id="role" name="role" required>
+                            <option value="" disabled selected>-- Select Role --</option>
+                            <option value="user">User (Trekker)</option>
+                            <option value="staff">Trek Staff</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="password" class="form-label fw-semibold">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-muted"></i></span>
+                        <input type="password" class="form-control bg-light border-start-0" id="password" name="password" placeholder="Create password" required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="confirm_password" class="form-label fw-semibold">Confirm Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-check-lg text-muted"></i></span>
+                        <input type="password" class="form-control bg-light border-start-0" id="confirm_password" name="confirm_password" placeholder="Confirm password" required>
+                    </div>
+                </div>
+                
+                <div class="d-grid mt-4">
+                    <button type="submit" class="btn btn-primary py-2 rounded-3 fw-bold">Register</button>
+                </div>
+            </form>
+            
+            <div class="text-center mt-4">
+                <span class="text-muted">Already have an account?</span> 
+                <a href="{{ url_for('auth.login') }}" class="text-primary fw-semibold text-decoration-none">Login here</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

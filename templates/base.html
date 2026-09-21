@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Trekking Management Application{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Google Fonts Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom Style -->
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+    <!-- Sidebar Navigation -->
+    <div class="sidebar d-none d-md-block">
+        <div class="brand text-center">
+            <i class="bi bi-compass-fill me-2 text-warning"></i>TrekManage
+        </div>
+        <div class="nav flex-column mt-3">
+            {% if session.get('role') == 'admin' %}
+                <a class="nav-link {% if active_page == 'admin_dashboard' %}active{% endif %}" href="{{ url_for('admin.dashboard') }}">
+                    <i class="bi bi-grid-fill"></i>Dashboard
+                </a>
+                <a class="nav-link {% if active_page == 'admin_treks' %}active{% endif %}" href="{{ url_for('admin.treks') }}">
+                    <i class="bi bi-map-fill"></i>Treks
+                </a>
+                <a class="nav-link {% if active_page == 'admin_staff' %}active{% endif %}" href="{{ url_for('admin.staff') }}">
+                    <i class="bi bi-people-fill"></i>Staff
+                </a>
+                <a class="nav-link {% if active_page == 'admin_users' %}active{% endif %}" href="{{ url_for('admin.users') }}">
+                    <i class="bi bi-person-badge-fill"></i>Users
+                </a>
+                <a class="nav-link {% if active_page == 'admin_bookings' %}active{% endif %}" href="{{ url_for('admin.bookings') }}">
+                    <i class="bi bi-journal-check"></i>Bookings
+                </a>
+                <a class="nav-link {% if active_page == 'admin_search' %}active{% endif %}" href="{{ url_for('admin.search') }}">
+                    <i class="bi bi-search"></i>Search
+                </a>
+                <a class="nav-link {% if active_page == 'admin_reports' %}active{% endif %}" href="{{ url_for('admin.reports') }}">
+                    <i class="bi bi-bar-chart-line-fill"></i>Reports
+                </a>
+            {% elif session.get('role') == 'staff' %}
+                <a class="nav-link {% if active_page == 'staff_dashboard' %}active{% endif %}" href="{{ url_for('staff.dashboard') }}">
+                    <i class="bi bi-grid-fill"></i>My Dashboard
+                </a>
+                <a class="nav-link {% if active_page == 'staff_treks' %}active{% endif %}" href="{{ url_for('staff.my_treks') }}">
+                    <i class="bi bi-map-fill"></i>My Treks
+                </a>
+                <a class="nav-link {% if active_page == 'staff_participants' %}active{% endif %}" href="{{ url_for('staff.participants') }}">
+                    <i class="bi bi-people-fill"></i>Participants
+                </a>
+                <a class="nav-link {% if active_page == 'staff_profile' %}active{% endif %}" href="{{ url_for('staff.profile') }}">
+                    <i class="bi bi-person-fill"></i>Profile
+                </a>
+            {% elif session.get('role') == 'user' %}
+                <a class="nav-link {% if active_page == 'user_dashboard' %}active{% endif %}" href="{{ url_for('user.dashboard') }}">
+                    <i class="bi bi-grid-fill"></i>Dashboard
+                </a>
+                <a class="nav-link {% if active_page == 'user_browse' %}active{% endif %}" href="{{ url_for('user.browse_treks') }}">
+                    <i class="bi bi-compass"></i>Browse Treks
+                </a>
+                <a class="nav-link {% if active_page == 'user_bookings' %}active{% endif %}" href="{{ url_for('user.my_bookings') }}">
+                    <i class="bi bi-journal-text"></i>My Bookings
+                </a>
+                <a class="nav-link {% if active_page == 'user_history' %}active{% endif %}" href="{{ url_for('user.history') }}">
+                    <i class="bi bi-clock-history"></i>History
+                </a>
+                <a class="nav-link {% if active_page == 'user_profile' %}active{% endif %}" href="{{ url_for('user.profile') }}">
+                    <i class="bi bi-person-circle"></i>Profile
+                </a>
+            {% else %}
+                <a class="nav-link {% if active_page == 'login' %}active{% endif %}" href="{{ url_for('auth.login') }}">
+                    <i class="bi bi-box-arrow-in-right"></i>Login
+                </a>
+                <a class="nav-link {% if active_page == 'register' %}active{% endif %}" href="{{ url_for('auth.register') }}">
+                    <i class="bi bi-person-plus-fill"></i>Register
+                </a>
+            {% endif %}
+            
+            {% if session.get('user_id') %}
+                <a class="nav-link text-danger mt-5 border-0" href="{{ url_for('auth.logout') }}">
+                    <i class="bi bi-box-arrow-left"></i>Logout
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Mobile Nav Bar -->
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark d-md-none sticky-top">
+        <div class="container-fluid">
+            <a class="navbar-brand font-weight-bold" href="#">
+                <i class="bi bi-compass-fill me-2 text-warning"></i>TrekManage
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mobileNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mobileNavbar">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    {% if session.get('role') == 'admin' %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.dashboard') }}">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.treks') }}">Treks</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.staff') }}">Staff</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.users') }}">Users</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.bookings') }}">Bookings</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.search') }}">Search</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin.reports') }}">Reports</a></li>
+                    {% elif session.get('role') == 'staff' %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('staff.dashboard') }}">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('staff.my_treks') }}">My Treks</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('staff.participants') }}">Participants</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('staff.profile') }}">Profile</a></li>
+                    {% elif session.get('role') == 'user' %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('user.dashboard') }}">Dashboard</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('user.browse_treks') }}">Browse Treks</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('user.my_bookings') }}">My Bookings</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('user.history') }}">History</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('user.profile') }}">Profile</a></li>
+                    {% else %}
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.login') }}">Login</a></li>
+                        <li class="nav-item"><a class="nav-link" href="{{ url_for('auth.register') }}">Register</a></li>
+                    {% endif %}
+                    {% if session.get('user_id') %}
+                        <li class="nav-item"><a class="nav-link text-danger" href="{{ url_for('auth.logout') }}">Logout</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content wrapper -->
+    <div class="main-content">
+        <!-- Top header row with user profile info -->
+        <div class="d-none d-md-flex justify-content-end align-items-center mb-4 top-header">
+            {% if session.get('user_id') %}
+                <div class="dropdown">
+                    <button class="btn btn-link text-dark dropdown-toggle text-decoration-none fw-semibold" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle me-2 text-primary"></i>{{ session.get('name') }} 
+                        <span class="badge bg-secondary ms-1">{{ session.get('role') | capitalize }}</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0" aria-labelledby="userMenuButton">
+                        {% if session.get('role') == 'user' %}
+                            <li><a class="dropdown-item" href="{{ url_for('user.profile') }}"><i class="bi bi-gear me-2"></i>Profile Settings</a></li>
+                        {% elif session.get('role') == 'staff' %}
+                            <li><a class="dropdown-item" href="{{ url_for('staff.profile') }}"><i class="bi bi-gear me-2"></i>Profile Settings</a></li>
+                        {% endif %}
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}"><i class="bi bi-box-arrow-left me-2"></i>Logout</a></li>
+                    </ul>
+                </div>
+            {% else %}
+                <a class="btn btn-outline-primary btn-sm me-2" href="{{ url_for('auth.login') }}">Log In</a>
+                <a class="btn btn-primary btn-sm" href="{{ url_for('auth.register') }}">Sign Up</a>
+            {% endif %}
+        </div>
+
+        <!-- Flash alerts -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="container-fluid px-0">
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category if category != 'error' else 'danger' }} alert-dismissible fade show shadow-sm rounded-3 mb-4" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Body block -->
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

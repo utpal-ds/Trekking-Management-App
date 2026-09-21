@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Trekking History - TrekManage{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">Trekking History</h2>
+    </div>
+
+    <!-- History Table (Page 12) -->
+    <div class="card custom-table-card">
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Trek Name</th>
+                        <th>Trek Dates</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for booking in bookings %}
+                        <tr>
+                            <td><strong>{{ booking.trek.name }}</strong></td>
+                            <td>{{ booking.trek.start_date }} to {{ booking.trek.end_date }}</td>
+                            <td>
+                                <span class="badge-status {% if booking.status == 'Completed' %}badge-completed{% else %}badge-cancelled{% endif %}">
+                                    {{ booking.status }}
+                                </span>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="3" class="text-center text-muted py-5">You have no historical or completed/cancelled treks.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

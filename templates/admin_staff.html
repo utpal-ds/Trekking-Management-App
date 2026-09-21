@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Staff - TrekManage{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-primary">Staff Requests</h2>
+    </div>
+
+    <!-- Filter Tabs (Page 6) -->
+    <ul class="nav nav-tabs mb-4" id="staffTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending" type="button" role="tab">
+                Pending <span class="badge bg-warning ms-1 text-dark">{{ pending_staff|length }}</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="approved-tab" data-bs-toggle="tab" data-bs-target="#approved" type="button" role="tab">
+                Approved <span class="badge bg-success ms-1">{{ approved_staff|length }}</span>
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="blacklisted-tab" data-bs-toggle="tab" data-bs-target="#blacklisted" type="button" role="tab">
+                Blacklisted <span class="badge bg-danger ms-1">{{ blacklisted_staff|length }}</span>
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="staffTabsContent">
+        <!-- Pending Staff -->
+        <div class="tab-pane fade show active" id="pending" role="tabpanel">
+            <div class="card custom-table-card">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Staff ID</th>
+                                <th>Name</th>
+                                <th>Email/Contact</th>
+                                <th>Status</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for staff in pending_staff %}
+                                <tr>
+                                    <td>S{{ "%03d" | format(staff.id) }}</td>
+                                    <td><strong>{{ staff.name }}</strong></td>
+                                    <td>{{ staff.contact_details }}</td>
+                                    <td><span class="badge-status badge-pending">Pending</span></td>
+                                    <td class="text-end">
+                                        <form action="{{ url_for('admin.staff_action', staff_id=staff.id, action_type='approve') }}" method="POST" class="d-inline">
+                                            <button type="submit" class="btn btn-success btn-sm px-3 me-1">Approve</button>
+                                        </form>
+                                        <form action="{{ url_for('admin.staff_action', staff_id=staff.id, action_type='reject') }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to reject this request?');">
+                                            <button type="submit" class="btn btn-danger btn-sm px-3">Reject</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">No pending staff registration requests.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Approved Staff -->
+        <div class="tab-pane fade" id="approved" role="tabpanel">
+            <div class="card custom-table-card">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Staff ID</th>
+                                <th>Name</th>
+                                <th>Email/Contact</th>
+                                <th>Status</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for staff in approved_staff %}
+                                <tr>
+                                    <td>S{{ "%03d" | format(staff.id) }}</td>
+                                    <td><strong>{{ staff.name }}</strong></td>
+                                    <td>{{ staff.contact_details }}</td>
+                                    <td><span class="badge-status badge-open">Approved</span></td>
+                                    <td class="text-end">
+                                        <form action="{{ url_for('admin.staff_action', staff_id=staff.id, action_type='blacklist') }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to blacklist this staff member?');">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm px-3">Blacklist</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">No approved staff members.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blacklisted Staff -->
+        <div class="tab-pane fade" id="blacklisted" role="tabpanel">
+            <div class="card custom-table-card">
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead>
+                            <tr>
+                                <th>Staff ID</th>
+                                <th>Name</th>
+                                <th>Email/Contact</th>
+                                <th>Status</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for staff in blacklisted_staff %}
+                                <tr>
+                                    <td>S{{ "%03d" | format(staff.id) }}</td>
+                                    <td><strong>{{ staff.name }}</strong></td>
+                                    <td>{{ staff.contact_details }}</td>
+                                    <td><span class="badge-status badge-closed">Blacklisted</span></td>
+                                    <td class="text-end">
+                                        <form action="{{ url_for('admin.staff_action', staff_id=staff.id, action_type='approve') }}" method="POST" class="d-inline">
+                                            <button type="submit" class="btn btn-outline-success btn-sm px-3">Re-Approve</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">No blacklisted staff members.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
